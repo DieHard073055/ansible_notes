@@ -111,20 +111,20 @@ webserver:
 You can reference those values with the dot notation or bracket notation. Dot notation will not work if it collides with python public attributes or dunder methods and attributes. Its best practise to use bracket notation.
 ```
 tasks:
-  - name: Show the username and password
-    debug:
-      msg: "{{webserver['username']}}:{{webserver['password']}}"
+- name: Show the username and password
+  debug:
+    msg: "{{webserver['username']}}:{{webserver['password']}}"
 ```
 The double curly braces are jinja2 syntax. Ansible supports jinja2 syntax for both processing templates and strings.
 You can use variables in conjunction with `when` keyword.
 ```yaml
 tasks:
-  - name: Install apache for CentOS and RedHat
-    yum:
-      name: httpd
-      state: latest
-    when: (ansible_facts['distribution'] == "CentOS") or (ansible_facts['distribution'] == "RedHat")
-    become: yes
+- name: Install apache for CentOS and RedHat
+  yum:
+    name: httpd
+    state: latest
+  when: (ansible_facts['distribution'] == "CentOS") or (ansible_facts['distribution'] == "RedHat")
+  become: yes
 ```
 Using `block` in conjunction with the `when` keyword can allow you to run a block of tasks after checking a condition as demonstrated above. And if the tasks failed it can run another set of tasks so that our playbooks can be more fault tolerant.
 ```yaml
@@ -165,9 +165,9 @@ If you have the file above in the specified location you should be able to read 
 ```yaml
 - hosts: local
   tasks:
-    - name: Mongo version
-      debug:
-        msg: "{{ansible_local['mongodb']['version']}}"
+  - name: Mongo version
+    debug:
+      msg: "{{ansible_local['mongodb']['version']}}"
 ```
 > All facts will be accessible lower cased when using `ansible_local['lowercase_value']`.
 
@@ -182,13 +182,101 @@ In order to get information about another host, Ansible would have had to gather
 
 - hosts: localhost
   tasks:
-    - name: show the os family of db5
-      debug:
-        msg: "{{ hostvars['db5.ansible.com']['ansible_facts']['os_family'] }}"
+  - name: show the os family of db5
+    debug:
+      msg: "{{ hostvars['db5.ansible.com']['ansible_facts']['os_family'] }}"
 ```
 It is also possible to do fact caching in between ansible playbook executions. If you are dealing with very large groups of servers. It will take alot of time to gather facts from all those instances. You can do this by installing redis and configuring ansible.cfg to use redis as cache.
 
 ### Plays & Playbooks
+Ansible plays and playbooks are what makes Ansible. It is a thorough definition of how a system should be configured. If you organize your playbooks well, this can be used as the documentation of your infrastructure. At the same time use it to configure your infrastructure.
+Ansible playbooks are YAML based configuration files. It normally consists of lists of tasks which needs to be run against a target host / host group.
+#### update_package_cache.yml
+```yaml
+- hosts: us-east-webservers
+  tasks:
+  - name: update the package cache for all the web servers in US east region
+    yum:
+      update_cache: yes
+    become: yes
+
+```
+Above is a simple playbook with just one play, and one task. however you can have multiple plays
+#### install_httpd_and_postgres.yml
+```yaml
+# First play
+- hosts: all-webservers
+  # disable fact gathering, since we dont need it
+  gather_facts: no
+  # the user to use, when logging into the target host
+  remote_user: web_admin
+  # custom variables
+  vars:
+    http_port: 8080
+  # task list to run for this play
+  tasks:
+  - name: Install the latest version of httpd
+    yum:
+      name: httpd
+      state: latest
+    become: yes
+    handlers:
+      - name: restart httpd
+# Second Play
+- hosts: all-databaseservers
+  gather_facts: no
+  remote_user: db_admin
+  vars:
+    db_connection_port: 5432
+    db_root_user: pg_admin
+  tasks:
+  - name: Install the latest version of postgres in all the database servers
+    yum:
+      name: postgresql
+      state: latest
+    become: yes
+    handlers:
+      - name: restart postgres
+```
+By specifying `hosts` you are targeting the tasks below this to be run on that host. You can also include some custom variables under `vars`. If you dont need facts about the target hosts, you can disable facts gathering.
+The goal when writing playbooks is to make them resuable. When you do attempt this, you will endup with a very large playbook. The next step would be to break this down into multiple files to make it manageable. This can be done using the `include_tasks` and `import_tasks`. You can also import playbooks using `import_playbook`.
+```yaml
+- hosts: webserver
+  task:
+    - name: Update package cache
+      yum:
+        update_cache: yes
+- name: Import db playbook
+  import_playbook: db_playbook.yml
+```
+Or you can just import tasks using `import`.
+```yaml
+- hosts: webservers
+  gather_facts: yes
+  tasks:
+    - import_tasks: webserver_redhat.yml
+      when: ansible_facts['distribution'] == "RedHat"
+    - import_tasks: webserver_debian.yml
+      when: ansible_facts['distribution'] == "Debian"
+```
+Include tasks can be used to achieve something similar.
+```yaml
+- hosts: IoT_edge-nodes
+  gather_facts: yes
+  vars:
+    remote_user: admin
+  tasks:
+    - name: load the playbook depending on the device mac address
+      include_tasks: "device_{{hostvars[inventory_host]['ansible_eth0']['ipv4']['macaddress']}}.yml"
+```
+There is a difference between import tasks and include tasks. `import_tasks` will be preprocessed at the time the playbooks are parsed. Normally use this when you know the task to import the task before hand. Like the example above. You would use `include_tasks` when you will know the name of task at runtime. The task file is parsed at runtime as well.
 
 ### Configuration Files
+Ansible uses a configuration file to set settings. And these settings can be adjusted however you would like. Normally the configuration file is at `/etc/ansible/ansible.cfg`. Ansible looks for the configuration file in the following order:
+- `ANSIBLE_CONFIG` environment variable.
+- `ansible.cfg` in the current directory
+- `~/.ansible.cfg` in the home directory
+- `/etc/ansible/ansible.cfg` the default config which is added during ansible install.
+
+You can use the options of providing ansible config to override depending on your need. The flexibility does come with security risks. If you leave it in a directory where it is wriable.
 {% endraw %}
