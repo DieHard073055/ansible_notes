@@ -1,1 +1,1 @@
-Sitemap: https://username.github.io/sitemap.xml
+Sitemap: https://diehard073055.github.io/ansible-notes/sitemap.xml
