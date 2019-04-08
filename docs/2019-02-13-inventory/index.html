@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+
+  <title>Inventory</title>
+
+  <meta name="author" content="Eshan Shafeeq" />
+
+  
+
+  <link rel="alternate" type="application/rss+xml" title="RedHat Certified Ansible Specialist Notes - This blog contains almost everything which will be covered in the RedHat Certified Ansible Specialist exam. Might contain just a little bit more than whats required. But this should help anyone else out there." href="/feed.xml" />
+
+  
+
+  
+
+  
+
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Inventory" />
+  
+
+   
+  <meta property="og:description" content="Inventory Essentails and Inventory Variables Overview Use both static and dynamic inventories to define groups of hosts: What is the inventory File formats Static vs Dynamic Variables and inventories Utlize an existing dynamic inventory script On dynamic inventories Some popular options What is an inventory An inventory is a list...">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="https://username.github.io/2019-02-13-inventory/" />
+  <link rel="canonical" href="https://username.github.io/2019-02-13-inventory/" />
+  
+
+  
+  <meta property="og:image" content="https://username.github.io/img/avatar-icon.png" />
+  
+
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@" />
+  <meta name="twitter:creator" content="@" />
+
+  
+  <meta name="twitter:title" content="Inventory" />
+  
+
+  
+  <meta name="twitter:description" content="Inventory Essentails and Inventory Variables Overview Use both static and dynamic inventories to define groups of hosts: What is the inventory File formats Static vs Dynamic Variables and inventories Utlize an existing dynamic inventory script On dynamic inventories Some popular options What is an inventory An inventory is a list...">
+  
+
+  
+  <meta name="twitter:image" content="https://username.github.io/img/avatar-icon.png" />
+  
+
+  
+
+  
+
+</head>
+
+
+  <body>
+
+    
+
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="https://username.github.io">RedHat Certified Ansible Specialist Notes</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+        
+          <li class="navlinks-container">
+            <a class="navlinks-parent" href="javascript:void(0)">Resources</a>
+            <div class="navlinks-children">
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://www.markdowntutorial.com/">Learn markdown</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="https://pages.github.com/">GitHub Pages</a>
+
+                
+              
+            </div>
+          </li>
+        
+        
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/eshanshafeeq.com">Author's home</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="https://username.github.io">
+	      <img class="avatar-img" src="/img/avatar-icon.png" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Inventory</h1>
+		  
+		  
+		  
+		  <span class="post-meta">Posted on February 13, 2019</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      
+
+      <article role="main" class="blog-post">
+        <h1 id="inventory-essentails-and-inventory-variables">Inventory Essentails and Inventory Variables</h1>
+
+<h3 id="overview">Overview</h3>
+<ul>
+  <li>Use both static and dynamic inventories to define groups of hosts:
+    <ul>
+      <li>What is the inventory</li>
+      <li>File formats</li>
+      <li>Static vs Dynamic</li>
+      <li>Variables and inventories</li>
+    </ul>
+  </li>
+  <li>Utlize an existing dynamic inventory script
+    <ul>
+      <li>On dynamic inventories</li>
+      <li>Some popular options</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="what-is-an-inventory">What is an inventory</h3>
+<ul>
+  <li>An inventory is a list of hosts that ansible manages.</li>
+  <li>Inventory location maybe specified as follows.
+    <ul>
+      <li><strong>Default :</strong> /etc/ansible/hosts.</li>
+      <li><strong>Specified by cli :</strong> ansible -i <code class="highlighter-rouge">&lt;filename&gt;</code>.</li>
+      <li>Can be set in ansible config.</li>
+    </ul>
+  </li>
+  <li>Inventory file can contain hosts, patterns, groups and variables.</li>
+  <li>You may specify the inventory as a directory containing series of inventory files (both static and dynamic)</li>
+  <li>The inventory maybe specified in YAML or INI format</li>
+  <li>Can be static or dynamic</li>
+</ul>
+
+<h3 id="file-format">File Format</h3>
+
+<h4 id="yaml">YAML</h4>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">all</span><span class="pi">:</span>
+    <span class="na">hosts</span><span class="pi">:</span>
+        <span class="s">mail.example.com</span>
+            <span class="s">ansible_port</span><span class="pi">:</span> <span class="s">5556</span>
+            <span class="s">ansible_host</span><span class="pi">:</span> <span class="s">192.168.1.24</span>
+    <span class="na">childeren</span><span class="pi">:</span>
+        <span class="na">webservers</span><span class="pi">:</span>
+            <span class="na">hosts</span><span class="pi">:</span>
+                <span class="s">httpd1.example.com</span>
+                <span class="s">httpd2.example.com</span>
+        <span class="na">vars</span><span class="pi">:</span>
+            <span class="s">http_port:8000</span>
+        <span class="na">labservers</span><span class="pi">:</span>
+            <span class="na">hosts</span><span class="pi">:</span>
+                <span class="s">lab[01:99].example.com</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+
+<h4 id="ini">INI</h4>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">mail.example.com</span> <span class="py">ansible_port</span><span class="p">=</span><span class="s">5556 ansible_host=192.168.1.24</span>
+
+<span class="nn">[webservers]</span>
+<span class="err">httpd1.example.com</span>
+<span class="err">httpd2.example.com</span>
+
+<span class="nn">[webserver:vars]</span>
+<span class="py">http_port</span><span class="p">=</span><span class="s">8000</span>
+
+<span class="nn">[labservers]</span>
+<span class="err">lab</span><span class="nn">[01:99]</span><span class="err">.example.com</span>
+</code></pre></div></div>
+
+<h3 id="static-vs-dynamic-inventory">Static vs Dynamic inventory</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Static</th>
+      <th>Dynamic</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>INI or YAML format</td>
+      <td>Executables ( Bash scripts / python scripts / etc )</td>
+    </tr>
+    <tr>
+      <td>Maintained by hand</td>
+      <td>Script returns JSON containing the inventory information</td>
+    </tr>
+    <tr>
+      <td>Easy to manage for static configuration</td>
+      <td>Good for cloud resources which will be subject to sudden change</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="variables-and-inventories">Variables and Inventories</h3>
+<ul>
+  <li>Ansible recommends that variables not be defined in inventory files.</li>
+  <li>Should be stored in YAML files located relative to inventory files.</li>
+  <li>File structure should be as follows:
+    <ul>
+      <li>inventory/
+        <ul>
+          <li>group_vars/
+            <ul>
+              <li><code class="highlighter-rouge">&lt;group name&gt;</code></li>
+            </ul>
+          </li>
+          <li>host_vars/
+            <ul>
+              <li><code class="highlighter-rouge">&lt;host name&gt;</code></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Files named by host or group may end in yml or yaml</li>
+</ul>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># inventory.ini
+</span>
+<span class="err">mail.example.com</span>
+
+<span class="nn">[httpd]</span>
+<span class="err">httpd1.example.com</span>
+<span class="err">httpd2.example.com</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>Dynamic inventories use an executable which can be a python script or a bash
+script, As long as its an executable, we can pass it to ansible with the -i
+flag.</p>
+</blockquote>
+
+      </article>
+
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=Inventory+https://username.github.io/2019-02-13-inventory/"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://username.github.io/2019-02-13-inventory/"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2019-02-11-ad-hoc-commands-in-ansible/" data-toggle="tooltip" data-placement="top" title="Ad-hoc Commands in Ansible">&larr; Previous Post</a>
+        </li>
+        
+        
+        <li class="next">
+          <a href="/2019-02-19-playbooks-and-common-modules/" data-toggle="tooltip" data-placement="top" title="Playbooks and Common Modules">Next Post &rarr;</a>
+        </li>
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+        </div>
+          
+        <div class="staticman-comments">
+          
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links"><li><a href="/feed.xml" title="RSS"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">RSS</span>
+              </a>
+            </li><li><a href="mailto:eshfq@gmail.com" title="Email me"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Email me</span>
+              </a>
+            </li><li><a href="https://github.com/DieHard073055" title="GitHub"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">GitHub</span>
+              </a>
+            </li><li><a href="https://twitter.com/Diehard073055" title="Twitter"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Twitter</span>
+              </a>
+            </li></ul>
+      <p class="copyright text-muted">
+      Eshan Shafeeq
+      &nbsp;&bull;&nbsp;
+      2019
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="https://username.github.io">eshanshafeeq.com</a>
+      
+
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="https://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+  
+  </body>
+</html>

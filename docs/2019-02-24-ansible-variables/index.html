@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+
+  <title>Ansible Variables & Facts</title>
+
+  <meta name="author" content="Eshan Shafeeq" />
+
+  
+
+  <link rel="alternate" type="application/rss+xml" title="RedHat Certified Ansible Specialist Notes - This blog contains almost everything which will be covered in the RedHat Certified Ansible Specialist exam. Might contain just a little bit more than whats required. But this should help anyone else out there." href="/feed.xml" />
+
+  
+
+  
+
+  
+
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Ansible Variables & Facts" />
+  
+
+   
+  <meta property="og:description" content="Overview Ansible Variables Dictionary Variables Magic Variables and filters What are facts? How to use facts Facts.d - custom facts Ansible Variables Naming ansible variables: ansible variables can contain letters numbers and underscores. Some more places to define variables: vars, vars_files, vars_prompt Commandline: ansible-playbook play.yml -e '{&quot;date&quot;:&quot;2019-08-04&quot;, &quot;time&quot;:&quot;08:26&quot;}' Roles, blocks...">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="https://username.github.io/2019-02-24-ansible-variables/" />
+  <link rel="canonical" href="https://username.github.io/2019-02-24-ansible-variables/" />
+  
+
+  
+  <meta property="og:image" content="https://username.github.io/img/avatar-icon.png" />
+  
+
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@" />
+  <meta name="twitter:creator" content="@" />
+
+  
+  <meta name="twitter:title" content="Ansible Variables & Facts" />
+  
+
+  
+  <meta name="twitter:description" content="Overview Ansible Variables Dictionary Variables Magic Variables and filters What are facts? How to use facts Facts.d - custom facts Ansible Variables Naming ansible variables: ansible variables can contain letters numbers and underscores. Some more places to define variables: vars, vars_files, vars_prompt Commandline: ansible-playbook play.yml -e '{&quot;date&quot;:&quot;2019-08-04&quot;, &quot;time&quot;:&quot;08:26&quot;}' Roles, blocks...">
+  
+
+  
+  <meta name="twitter:image" content="https://username.github.io/img/avatar-icon.png" />
+  
+
+  
+
+  
+
+</head>
+
+
+  <body>
+
+    
+
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="https://username.github.io">RedHat Certified Ansible Specialist Notes</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+        
+          <li class="navlinks-container">
+            <a class="navlinks-parent" href="javascript:void(0)">Resources</a>
+            <div class="navlinks-children">
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://www.markdowntutorial.com/">Learn markdown</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="https://pages.github.com/">GitHub Pages</a>
+
+                
+              
+            </div>
+          </li>
+        
+        
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/eshanshafeeq.com">Author's home</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="https://username.github.io">
+	      <img class="avatar-img" src="/img/avatar-icon.png" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Ansible Variables & Facts</h1>
+		  
+		  
+		  
+		  <span class="post-meta">Posted on February 24, 2019</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      
+
+      <article role="main" class="blog-post">
+        <h3 id="overview">Overview</h3>
+<ul>
+  <li>Ansible Variables</li>
+  <li>Dictionary Variables</li>
+  <li>Magic Variables and filters</li>
+  <li>What are facts?</li>
+  <li>How to use facts</li>
+  <li>Facts.d - custom facts</li>
+</ul>
+
+<h3 id="ansible-variables">Ansible Variables</h3>
+<ul>
+  <li>Naming ansible variables:
+    <ul>
+      <li>ansible variables can contain letters numbers and underscores.</li>
+    </ul>
+  </li>
+  <li>Some more places to define variables:
+    <ul>
+      <li>vars, vars_files, vars_prompt</li>
+      <li>Commandline: <code class="highlighter-rouge">ansible-playbook play.yml -e '{"date":"2019-08-04",
+"time":"08:26"}'</code></li>
+      <li>Roles, blocks and inventories</li>
+    </ul>
+  </li>
+  <li>Essential Variable use:
+    <ul>
+      <li>
+        <ul>
+          <li>debug: msg=” Look! I’m using my variable {{ myVar }}!”</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>A node on quotes:
+    <ul>
+      <li>Ansible may get confused about variables and module attributes if
+variables are not expressed with in a quote.</li>
+      <li>”{{ pakage }}”</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="dictionary-variables">Dictionary Variables</h3>
+<ul>
+  <li>Yaml formatting allows for python style dictonaries to be used as variables</li>
+  <li>There are two formats to access dictionary values:
+    <ul>
+      <li>employee[‘name’]</li>
+      <li>employee.name</li>
+    </ul>
+  </li>
+  <li>The bracket syntax is safer as the dot notation can have collisions with
+python in certain circumstances.</li>
+</ul>
+
+<h3 id="magic-variables-and-filters">Magic Variables and Filters</h3>
+<ul>
+  <li>Ansible defines several special variables known as magic variables.</li>
+  <li>You can use the variable hostvars to look at facts about other hosts in the
+inventory.
+` {{hostvars[‘node’][‘ansible_distribution’]}} `</li>
+  <li>There is also a groups variable that provides inventory information. <code class="highlighter-rouge">{{ groups['webservers'] }}</code></li>
+  <li>Jinja2 filters can be useful in manipulating text format. <code class="highlighter-rouge">{{ groups['webservers'].join(' ') }}</code></li>
+</ul>
+
+<p>Example of magic variable</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="nn">---</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">local</span>
+  <span class="na">vars</span><span class="pi">:</span>
+    <span class="na">inv_file</span><span class="pi">:</span> <span class="s">/home/user/vars/inv.txt</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">create file</span>
+      <span class="na">file</span><span class="pi">:</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{inv_file}}"</span>
+        <span class="na">state</span><span class="pi">:</span> <span class="s">touch</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span>  <span class="s">generate inventory</span>
+      <span class="na">lineinfile</span><span class="pi">:</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{inv_file}}"</span>
+        <span class="na">line</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">groups['labservers'].join('</span><span class="nv"> </span><span class="s">')</span><span class="nv"> </span><span class="s">}}"</span>
+
+</code></pre></div></div>
+
+<p>The above example will generate a line of all the labservers defined in the
+inventory file.</p>
+
+<p>Another example</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># users.yaml</span>
+<span class="na">staff</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">joe</span>
+  <span class="pi">-</span> <span class="s">john</span>
+  <span class="pi">-</span> <span class="s">bob</span>
+  <span class="pi">-</span> <span class="s">sam</span>
+  <span class="pi">-</span> <span class="s">mark</span>
+<span class="na">faculty</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">matt</span>
+  <span class="pi">-</span> <span class="s">alex</span>
+  <span class="pi">-</span> <span class="s">frank</span>
+<span class="na">other</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">will</span>
+  <span class="pi">-</span> <span class="s">jack</span>
+</code></pre></div></div>
+
+<p>A playbook to interact with the text file above</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="nn">---</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">local</span>
+  <span class="na">vars</span><span class="pi">:</span>
+    <span class="na">userFile</span><span class="pi">:</span> <span class="s">/home/user/vars/list</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">create file</span>
+      <span class="na">file</span><span class="pi">:</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">userFile</span><span class="nv"> </span><span class="s">}}"</span>
+        <span class="na">state</span><span class="pi">:</span> <span class="s">touch</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">list users</span>
+      <span class="na">lineinfile</span><span class="pi">:</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">userFile</span><span class="nv"> </span><span class="s">}}"</span>
+        <span class="na">line</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}"</span>
+      <span class="na">with_items</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">staff</span><span class="nv"> </span><span class="s">}}"</span>
+        <span class="pi">-</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">faculty</span><span class="nv"> </span><span class="s">}}"</span>
+        <span class="pi">-</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">}}"</span>
+
+</code></pre></div></div>
+
+<p>run the following command to see the playbook above in action
+ansible-playbook userList.yml -e “@users.lst”</p>
+
+<h3 id="what-are-facts">What are facts?</h3>
+<ul>
+  <li>Facts are information discovered by ansible about a target system.</li>
+  <li>There are two ways facts are collected:
+    <ul>
+      <li>Using the setup module with an ad-hoc command: ansible all -m setup</li>
+      <li>Facts are gathered by default when a playbook is executed</li>
+    </ul>
+  </li>
+  <li>Fact gathering in playbooks may be disabled using the gather_facts attribute.</li>
+</ul>
+
+<h3 id="how-to-use-facts">How to use facts?</h3>
+<ul>
+  <li>Any collected facts, they may be accessed through variables:
+    <ul>
+      <li>ansible_default_ipv4.address</li>
+    </ul>
+  </li>
+  <li>It is possible to use filters with regex, in adhoc mode, to match certain
+fact names.</li>
+  <li>Facts may also be used with conditionals to have plays behave differently on
+hosts that meet certain criteria.</li>
+</ul>
+
+<h3 id="custom-facts--factsd-">Custom Facts [ facts.d ]</h3>
+<ul>
+  <li>It is possible to define custom facts on your servers using the facts.d
+directory.</li>
+  <li>Create /etc/ansible/facts.d directory on the target system. All valid files
+within this directory ending in .fact are returned under ansible_local with
+facts</li>
+  <li>Fact files may be INI, JSON, or an executable that returns JSON.</li>
+</ul>
+
+<p>example custom fact file place it in the target system</p>
+<pre><code class="language-fact"># /etc/ansible/facts.d//prefs.fact
+[location]
+type=physical
+datacenter=Alexandra
+</code></pre>
+
+<p>now on your control host run the ad-hoc command.
+<code class="highlighter-rouge">ansible targetmachine -m setup -a "filter=ansible_local"</code></p>
+
+
+      </article>
+
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=Ansible+Variables+%26+Facts+https://username.github.io/2019-02-24-ansible-variables/"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://username.github.io/2019-02-24-ansible-variables/"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2019-02-24-ansible-templates/" data-toggle="tooltip" data-placement="top" title="Ansible Templates">&larr; Previous Post</a>
+        </li>
+        
+        
+        <li class="next">
+          <a href="/2019-03-12-ansible-ad-hoc-commands/" data-toggle="tooltip" data-placement="top" title="ansible ad hoc commands">Next Post &rarr;</a>
+        </li>
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+        </div>
+          
+        <div class="staticman-comments">
+          
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links"><li><a href="/feed.xml" title="RSS"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">RSS</span>
+              </a>
+            </li><li><a href="mailto:eshfq@gmail.com" title="Email me"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Email me</span>
+              </a>
+            </li><li><a href="https://github.com/DieHard073055" title="GitHub"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">GitHub</span>
+              </a>
+            </li><li><a href="https://twitter.com/Diehard073055" title="Twitter"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Twitter</span>
+              </a>
+            </li></ul>
+      <p class="copyright text-muted">
+      Eshan Shafeeq
+      &nbsp;&bull;&nbsp;
+      2019
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="https://username.github.io">eshanshafeeq.com</a>
+      
+
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="https://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+  
+  </body>
+</html>

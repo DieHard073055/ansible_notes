@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+
+  <title>Playbooks and Common Modules</title>
+
+  <meta name="author" content="Eshan Shafeeq" />
+
+  
+
+  <link rel="alternate" type="application/rss+xml" title="RedHat Certified Ansible Specialist Notes - This blog contains almost everything which will be covered in the RedHat Certified Ansible Specialist exam. Might contain just a little bit more than whats required. But this should help anyone else out there." href="/feed.xml" />
+
+  
+
+  
+
+  
+
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Playbooks and Common Modules" />
+  
+
+   
+  <meta property="og:description" content="Overview Common ansible modules. Create playbooks to configure systems to a specified state. Use variables to retrieve the results of running commands. Use conditionals to control the play execution. Configure error handling. Selectively run specified tasks in playbooks using tags. Common Ansible Modules (Working with files) copy, archive, unarchive, get_url....">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="https://username.github.io/2019-02-19-playbooks-and-common-modules/" />
+  <link rel="canonical" href="https://username.github.io/2019-02-19-playbooks-and-common-modules/" />
+  
+
+  
+  <meta property="og:image" content="https://username.github.io/img/avatar-icon.png" />
+  
+
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@" />
+  <meta name="twitter:creator" content="@" />
+
+  
+  <meta name="twitter:title" content="Playbooks and Common Modules" />
+  
+
+  
+  <meta name="twitter:description" content="Overview Common ansible modules. Create playbooks to configure systems to a specified state. Use variables to retrieve the results of running commands. Use conditionals to control the play execution. Configure error handling. Selectively run specified tasks in playbooks using tags. Common Ansible Modules (Working with files) copy, archive, unarchive, get_url....">
+  
+
+  
+  <meta name="twitter:image" content="https://username.github.io/img/avatar-icon.png" />
+  
+
+  
+
+  
+
+</head>
+
+
+  <body>
+
+    
+
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="https://username.github.io">RedHat Certified Ansible Specialist Notes</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+        
+          <li class="navlinks-container">
+            <a class="navlinks-parent" href="javascript:void(0)">Resources</a>
+            <div class="navlinks-children">
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://www.markdowntutorial.com/">Learn markdown</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="https://pages.github.com/">GitHub Pages</a>
+
+                
+              
+            </div>
+          </li>
+        
+        
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/eshanshafeeq.com">Author's home</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="https://username.github.io">
+	      <img class="avatar-img" src="/img/avatar-icon.png" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Playbooks and Common Modules</h1>
+		  
+		  
+		  
+		  <span class="post-meta">Posted on February 19, 2019</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      
+
+      <article role="main" class="blog-post">
+        <h3 id="overview">Overview</h3>
+<ul>
+  <li>Common ansible modules.</li>
+  <li>Create playbooks to configure systems to a specified state.</li>
+  <li>Use variables to retrieve the results of running commands.</li>
+  <li>Use conditionals to control the play execution.</li>
+  <li>Configure error handling.</li>
+  <li>Selectively run specified tasks in playbooks using tags.</li>
+</ul>
+
+<h3 id="common-ansible-modules">Common Ansible Modules</h3>
+
+<ul>
+  <li>(Working with files) copy, archive, unarchive, get_url.</li>
+  <li>user, group.</li>
+  <li>ping.</li>
+  <li>service.</li>
+  <li>yum</li>
+</ul>
+
+<h4 id="other-useful-modules">Other useful modules</h4>
+<ul>
+  <li>lineinfile.
+    <ul>
+      <li>edit a specific line in a file..</li>
+      <li>if the line is present in the file it wont duplicate the line.</li>
+    </ul>
+  </li>
+  <li>htpasswd.
+    <ul>
+      <li>allows you to work with the htpasswd file.</li>
+    </ul>
+  </li>
+  <li>shell and command modules.
+    <ul>
+      <li>shell module helps you setup environment before running a command on
+the machine.</li>
+      <li>command module will just execute the command without setting up the
+environment.</li>
+    </ul>
+  </li>
+  <li>script module.
+    <ul>
+      <li>specifically designed for you to run scripts on the remote host.
+takes a script which is to be run on the target host, sets up the
+environment and runs the script.</li>
+    </ul>
+  </li>
+  <li>debug module.
+    <ul>
+      <li>it allows you to monitor the performance of a perticular module
+youre running. You can print out the contents of variables to stdout</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="creating-playbooks-to-configure-systems-to-a-specified-state">Creating Playbooks to Configure Systems to a Specified State</h3>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># demo.yaml</span>
+<span class="nn">---</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">labservers</span>
+    <span class="s">become</span><span class="pi">:</span> <span class="s">yes</span>
+    <span class="s">tasks</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">install apache</span>
+          <span class="na">yum </span><span class="pi">:</span> <span class="s">name=httpd state=latest</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">start and enable httpd</span>
+          <span class="na">service</span><span class="pi">:</span> <span class="s">name=httpd state=started enabled=yes</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">create index.html</span>
+          <span class="na">file</span><span class="pi">:</span> <span class="s">path=/var/www/html/index.html state=touch</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">add a line to index.html</span>
+          <span class="na">lineinfile</span><span class="pi">:</span> <span class="s">path=/var/www/html/index.html line="&lt;h1&gt;Hello</span>
+          <span class="s">World!~&lt;/h1&gt;"</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+<blockquote>
+  <p>make sure you have your inventory file specified in /etc/ansible/hosts</p>
+</blockquote>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run the play book</span>
+ansible-playbook demo.yml
+</code></pre></div></div>
+<p>now all your lab servers should have httpd installed, running and enabled.</p>
+
+<h3 id="using-variables-to-retrieve-the-results-of-a-running-command">Using Variables to Retrieve the Results of a Running Command</h3>
+
+<ul>
+  <li>The register keyword
+    <ul>
+      <li>used to register variables within a play.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>example playbook</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="na">tasks</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">copy a file</span>
+          <span class="na">copy</span><span class="pi">:</span>
+            <span class="na">src</span><span class="pi">:</span> <span class="s">testfile</span>
+            <span class="na">dest</span><span class="pi">:</span> <span class="s">/home/user/testregister</span>
+            <span class="na">mode</span><span class="pi">:</span> <span class="s">400</span>
+          <span class="na">register</span><span class="pi">:</span> <span class="s">var</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">output debug info</span>
+          <span class="na">debug</span><span class="pi">:</span> <span class="s">msg="debug info is "</span>
+</code></pre></div></div>
+
+<p>another example playbook</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="pi">-</span> <span class="s">hosts</span>
+  <span class="s">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">create file</span>
+      <span class="na">file</span><span class="pi">:</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/tmp/newfile</span>
+        <span class="na">state</span><span class="pi">:</span> <span class="s">touch</span>
+      <span class="na">register</span><span class="pi">:</span> <span class="s">output</span>
+    <span class="pi">-</span> <span class="na">debug</span><span class="pi">:</span>
+      <span class="na">msg</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Register</span><span class="nv"> </span><span class="s">output</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">{{output}}"</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">edit file</span>
+       <span class="s">lineinfile</span><span class="pi">:</span>
+            <span class="na">path</span><span class="pi">:</span> <span class="s">/tmp/newfile</span>
+            <span class="na">line</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{output.uid}}"</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+
+<h3 id="use-conditionals-to-control-play-execution">Use conditionals to control play execution</h3>
+
+<p>example of using handlers</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">template configuration file</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">src</span><span class="pi">:</span> <span class="s">template.j2</span>
+    <span class="na">dest</span><span class="pi">:</span> <span class="s">/etc/foo.conf</span>
+  <span class="na">notify</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">roll web</span>
+</code></pre></div></div>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">handlers</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">restart apache</span>
+      <span class="na">service</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">apache</span>
+        <span class="na">state</span><span class="pi">:</span> <span class="s">restarted</span>
+      <span class="na">listen</span><span class="pi">:</span> <span class="s2">"</span><span class="s">roll</span><span class="nv"> </span><span class="s">web"</span>
+</code></pre></div></div>
+
+<p>when ever a notify is invoked, the handler that is listening on that notify
+topic will run.</p>
+
+<h4 id="other-conditional-keywords">other conditional keywords</h4>
+<ul>
+  <li>when</li>
+  <li>with_items</li>
+  <li>with_files</li>
+</ul>
+
+<p>with_items example</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="c1"># this play book creates 3 users for us</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">local</span>
+  <span class="na">become</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">create user</span>
+      <span class="na">user</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{item}}"</span>
+      <span class="na">with_items</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">sam</span>
+        <span class="pi">-</span> <span class="s">john</span>
+        <span class="pi">-</span> <span class="s">bob</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+
+<p>when example</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">labservers</span>
+  <span class="na">become</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">edit index</span>
+      <span class="na">lineinfile</span><span class="pi">:</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/var/www/html/index.html</span>
+        <span class="na">line</span><span class="pi">:</span> <span class="s2">"</span><span class="s">I'm</span><span class="nv"> </span><span class="s">Back!"</span>
+      <span class="na">when</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">ansible_hostname == "me"</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+
+<h3 id="configure-error-handling">Configure Error Handling</h3>
+<ul>
+  <li>Ignoring acceptable errors.</li>
+  <li>Defining failure conditions.</li>
+  <li>Defining “Changed”</li>
+  <li>Blocks ( try/catch )</li>
+</ul>
+
+<p>example of error handling</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="c1"># ignore errors</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">local</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">get files</span>
+      <span class="na">get_url</span><span class="pi">:</span>
+        <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{item}}/index.html"</span>
+        <span class="na">dest</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp/{{item}}"</span>
+      <span class="na">ignore_errors</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">with_items</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">server1</span>
+        <span class="pi">-</span> <span class="s">server2</span>
+        <span class="pi">-</span> <span class="s">server3</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="c1"># blocks to handle errors</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">local</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">get file</span>
+      <span class="na">block</span><span class="pi">:</span>
+          <span class="na">get_url</span><span class="pi">:</span>
+            <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://server1/index.html"</span>
+            <span class="na">dest</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp/index_file"</span>
+      <span class="na">rescue</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">debug</span><span class="pi">:</span> <span class="s">msg="The file dosen't exist"</span>
+      <span class="na">always</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">debug</span><span class="pi">:</span> <span class="s">msg"play is done"</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+<p>in the above example, if the task fails it will run the rescue block and the
+always block. Normally if it was successful it will run the task and the always
+block.</p>
+
+<h3 id="selectively-run-specified-tasks-in-playbook-using-tags">Selectively Run Specified Tasks in Playbook using Tags</h3>
+<ul>
+  <li>How ansible uses tags
+    <ul>
+      <li>allows you to run a set of tasks with a specific tag.</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># deploy.yaml</span>
+<span class="nn">---</span>
+<span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s">web</span>
+  <span class="na">become</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">deploy app binary</span>
+      <span class="na">copy</span><span class="pi">:</span>
+        <span class="na">src</span><span class="pi">:</span> <span class="s">/home/user/apps/hello</span>
+        <span class="na">dest</span><span class="pi">:</span> <span class="s">/var/www/html/hello</span>
+      <span class="na">tags</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">webdeploy</span>
+<span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s">db</span>
+  <span class="na">become</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">tasks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">deploy db script</span>
+      <span class="na">copy</span><span class="pi">:</span>
+        <span class="na">src</span><span class="pi">:</span> <span class="s">/home/user/apps/scripts.sql</span>
+        <span class="na">dest</span><span class="pi">:</span> <span class="s">/opt/db/scripts/scripts.sql</span>
+      <span class="na">tags</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">dbdeploy</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+
+<p>if you want to only run the web deploy task</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible-playbook deploy.yaml --tags webdeploy
+</code></pre></div></div>
+
+<p>if you want to only run the db deploy task</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible-playbook deploy.yaml --tags dbdeploy
+</code></pre></div></div>
+
+<p>you can skip tags using the skip-tags switch</p>
+
+
+      </article>
+
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=Playbooks+and+Common+Modules+https://username.github.io/2019-02-19-playbooks-and-common-modules/"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://username.github.io/2019-02-19-playbooks-and-common-modules/"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2019-02-13-inventory/" data-toggle="tooltip" data-placement="top" title="Inventory">&larr; Previous Post</a>
+        </li>
+        
+        
+        <li class="next">
+          <a href="/2019-02-24-ansible-templates/" data-toggle="tooltip" data-placement="top" title="Ansible Templates">Next Post &rarr;</a>
+        </li>
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+        </div>
+          
+        <div class="staticman-comments">
+          
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links"><li><a href="/feed.xml" title="RSS"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">RSS</span>
+              </a>
+            </li><li><a href="mailto:eshfq@gmail.com" title="Email me"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Email me</span>
+              </a>
+            </li><li><a href="https://github.com/DieHard073055" title="GitHub"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">GitHub</span>
+              </a>
+            </li><li><a href="https://twitter.com/Diehard073055" title="Twitter"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Twitter</span>
+              </a>
+            </li></ul>
+      <p class="copyright text-muted">
+      Eshan Shafeeq
+      &nbsp;&bull;&nbsp;
+      2019
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="https://username.github.io">eshanshafeeq.com</a>
+      
+
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="https://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+  
+  </body>
+</html>

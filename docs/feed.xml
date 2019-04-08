@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RedHat Certified Ansible Specialist Notes</title>
+    <description>This blog contains almost everything which will be covered in the RedHat Certified Ansible Specialist exam. Might contain just a little bit more than whats required. But this should help anyone else out there.</description>
+    <link>https://username.github.io</link>
+    <atom:link href="https://username.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>System Administration Tasks</title>
+        <description>
+          when you ask ansible to do chores - 
+          Here we will go through examples of doing tasks with ansible. Overview Software Packages and Repositories System Services Firewall Rules File Content External APIs Managing the Scheduling of Tasks Managing System Security Managing System Users and Groups Software Packages and Repositories This play book will about updating the package manager...
+        </description>
+        <pubDate>Wed, 20 Mar 2019 00:00:00 -0700</pubDate>
+        <link>https://username.github.io/2019-03-20-ansible-modules-for-system-administration-tasks/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-03-20-ansible-modules-for-system-administration-tasks/</guid>
+      </item>
+    
+      <item>
+        <title>lets bash ansible</title>
+        <description>
+          Dual Wielding Ansible and Bash - 
+          Yes!!, Ansible and Bash can be wielded together if you were caught in the situation where it requires you to. In this scenario, Eshan Industries need to create a Certificate Authority and Sign a Certificate for Eshan Industries Weapons Development Department. It requires you to have PyOpenSSL installed in order...
+        </description>
+        <pubDate>Mon, 18 Mar 2019 00:00:00 -0700</pubDate>
+        <link>https://username.github.io/2019-03-18-lets-bash-ansible/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-03-18-lets-bash-ansible/</guid>
+      </item>
+    
+      <item>
+        <title>configure ansible control node</title>
+        <description>
+          Each post also has a subtitle - 
+          Installing the required packages To get started with ansible, we need python and python-pip installed. Most linux distros comes with python and pip pre-installed. In case you want to install it grab it from python.org. Also please make sure you have ssh installed on all the machines. Even the target...
+        </description>
+        <pubDate>Sat, 16 Mar 2019 00:00:00 -0700</pubDate>
+        <link>https://username.github.io/2019-03-16-configure-ansible-control-node/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-03-16-configure-ansible-control-node/</guid>
+      </item>
+    
+      <item>
+        <title>core components of ansible</title>
+        <description>
+          what you need to know before going out with ansible - 
+          Inventories Static Inventory Inventory refers to a file / ( an executable which returns JSON data ) that ansible uses to identify its target hosts. You would normally group the hosts into groups based off of how you would like to run ansible commands on them. Same host can be...
+        </description>
+        <pubDate>Thu, 14 Mar 2019 00:00:00 -0700</pubDate>
+        <link>https://username.github.io/2019-03-14-cores-components-of-ansible/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-03-14-cores-components-of-ansible/</guid>
+      </item>
+    
+      <item>
+        <title>hostvars</title>
+        <description>
+          host variables - 
+          an example demonstrating the use of hostvars to get some information on the remote hosts --- - hosts: all gather_facts: True - hosts: localhost tasks: - name: print all the hostnames debug: msg: &quot;{{groups['labservers']}}&quot; - name: print the hostname, distribution and ip address of all the hosts debug: msg: &quot;{{hostvars[item]['ansible_hostname']}}...
+        </description>
+        <pubDate>Tue, 12 Mar 2019 00:00:00 -0700</pubDate>
+        <link>https://username.github.io/2019-03-12-host-vars/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-03-12-host-vars/</guid>
+      </item>
+    
+      <item>
+        <title>ansible ad hoc commands</title>
+        <description>
+          example ansible adhoc commands - 
+          Running a ad-hoc command ansible webservers -m ping The example above will ping all the web servers in your /etc/ansible/inventory. ansible webservers -m user -a &quot;name=admin group=admin generate_ssh_key=yes ssh_key_bits=4096&quot; --become creates a user admin on all the web servers and generates an ssh key for the user. And the command...
+        </description>
+        <pubDate>Tue, 12 Mar 2019 00:00:00 -0700</pubDate>
+        <link>https://username.github.io/2019-03-12-ansible-ad-hoc-commands/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-03-12-ansible-ad-hoc-commands/</guid>
+      </item>
+    
+      <item>
+        <title>Ansible Variables &amp; Facts</title>
+        <description>
+          
+          Overview Ansible Variables Dictionary Variables Magic Variables and filters What are facts? How to use facts Facts.d - custom facts Ansible Variables Naming ansible variables: ansible variables can contain letters numbers and underscores. Some more places to define variables: vars, vars_files, vars_prompt Commandline: ansible-playbook play.yml -e '{&quot;date&quot;:&quot;2019-08-04&quot;, &quot;time&quot;:&quot;08:26&quot;}' Roles, blocks...
+        </description>
+        <pubDate>Sun, 24 Feb 2019 00:00:00 -0800</pubDate>
+        <link>https://username.github.io/2019-02-24-ansible-variables/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-02-24-ansible-variables/</guid>
+      </item>
+    
+      <item>
+        <title>Ansible Templates</title>
+        <description>
+          
+          Overview Template Basics Template Module Template File Format Template Basics Templates give the ability to provide a skeletal file that can be dynamically completed using variables The most common template use case is configuration file management Templates are generally used by providing a template file on the ansible control node,...
+        </description>
+        <pubDate>Sun, 24 Feb 2019 00:00:00 -0800</pubDate>
+        <link>https://username.github.io/2019-02-24-ansible-templates/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-02-24-ansible-templates/</guid>
+      </item>
+    
+      <item>
+        <title>Playbooks and Common Modules</title>
+        <description>
+          
+          Overview Common ansible modules. Create playbooks to configure systems to a specified state. Use variables to retrieve the results of running commands. Use conditionals to control the play execution. Configure error handling. Selectively run specified tasks in playbooks using tags. Common Ansible Modules (Working with files) copy, archive, unarchive, get_url....
+        </description>
+        <pubDate>Tue, 19 Feb 2019 00:00:00 -0800</pubDate>
+        <link>https://username.github.io/2019-02-19-playbooks-and-common-modules/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-02-19-playbooks-and-common-modules/</guid>
+      </item>
+    
+      <item>
+        <title>Inventory</title>
+        <description>
+          
+          Inventory Essentails and Inventory Variables Overview Use both static and dynamic inventories to define groups of hosts: What is the inventory File formats Static vs Dynamic Variables and inventories Utlize an existing dynamic inventory script On dynamic inventories Some popular options What is an inventory An inventory is a list...
+        </description>
+        <pubDate>Wed, 13 Feb 2019 00:00:00 -0800</pubDate>
+        <link>https://username.github.io/2019-02-13-inventory/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-02-13-inventory/</guid>
+      </item>
+    
+      <item>
+        <title>Ad-hoc Commands in Ansible</title>
+        <description>
+          
+          Overview What is ad-hoc commands Use cases for ad-hoc commands ad-hoc vs playbook Ansible command syntax Common modules What is an ad-hoc Ansible Command You can either run ansible either ad-hoc or as a playbook, both have the same capabilities. Ad-hoc commands are basically one-liners. You can run a single...
+        </description>
+        <pubDate>Mon, 11 Feb 2019 00:00:00 -0800</pubDate>
+        <link>https://username.github.io/2019-02-11-ad-hoc-commands-in-ansible/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-02-11-ad-hoc-commands-in-ansible/</guid>
+      </item>
+    
+      <item>
+        <title>Yaml</title>
+        <description>
+          
+          Basic Yaml Syntax Composed of key-value pairs, lists and dictionaries. Files open with three hyphens --- on the first line and close with three periods ... List items are designated with a single hyphen and a space. Each list item should have the same indentation. Dictionaries are designated with a...
+        </description>
+        <pubDate>Thu, 07 Feb 2019 00:00:00 -0800</pubDate>
+        <link>https://username.github.io/2019-02-07-yaml/</link>
+        <guid isPermaLink="true">https://username.github.io/2019-02-07-yaml/</guid>
+      </item>
+    
+      <item>
+        <title>Test markdown</title>
+        <description>
+          Each post also has a subtitle - 
+          You can write regular markdown here and Jekyll will automatically convert it to a nice webpage. I strongly encourage you to take 5 minutes to learn how to write in markdown - it’ll teach you how to transform regular text into bold/italics/headings/tables/etc. Here is some bold text Here is a...
+        </description>
+        <pubDate>Sat, 28 Feb 2015 00:00:00 -0800</pubDate>
+        <link>https://username.github.io/2015-02-28-test-markdown/</link>
+        <guid isPermaLink="true">https://username.github.io/2015-02-28-test-markdown/</guid>
+      </item>
+    
+  </channel>
+</rss>
