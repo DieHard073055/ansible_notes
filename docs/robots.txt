@@ -1,1 +1,1 @@
-Sitemap: https://diehard073055.github.io/ansible-notes/sitemap.xml
+Sitemap: https://diehard073055.github.io/ansible_notes/sitemap.xml
