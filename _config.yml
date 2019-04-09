@@ -5,7 +5,7 @@
 
 # If you are building a simple GitHub user page (https://username.github.io) then use these settings:
 url: "https://diehard073055.github.io"
-baseurl: "/ansible-notes"
+baseurl: "/ansible_notes"
 
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
